@@ -329,6 +329,41 @@
   .goal-card{border-left:4px solid var(--accent);padding-left:22px;}
   .goal-card h3{font-size:1.25rem;}
 
+
+  /* worksheet print system */
+  .opts-stack{flex-direction:column;align-items:stretch;}
+  .opts-stack button{white-space:nowrap;}
+  #printRoot{display:none;}
+  @media print{
+    body.ws-printing > *:not(#printRoot){display:none !important;}
+    body.ws-printing #printRoot{display:block !important;}
+    #printRoot{color:#000;background:#fff;font-family:Georgia,'Times New Roman',serif;}
+    .ws-doc-head{text-align:center;margin-bottom:18pt;}
+    .ws-doc-head h1{font-size:18pt;margin:0 0 4pt;}
+    .ws-doc-head .ws-sub{font-size:10pt;color:#333;margin:0 0 12pt;}
+    .ws-id{display:flex;gap:24pt;font-size:11pt;border-bottom:1pt solid #000;padding-bottom:10pt;margin-bottom:16pt;}
+    .ws-id span{flex:1;}
+    .ws{page-break-inside:auto;margin-bottom:22pt;}
+    .ws + .ws{page-break-before:always;}
+    .ws h2{font-size:14pt;border-bottom:2pt solid #000;padding-bottom:3pt;margin:0 0 10pt;}
+    .ws-grp{font-size:11pt;font-weight:700;margin:12pt 0 4pt;text-transform:uppercase;letter-spacing:.5pt;}
+    .ws-field{margin-bottom:10pt;page-break-inside:avoid;}
+    .ws-prompt{font-size:10.5pt;font-weight:600;margin-bottom:3pt;}
+    .ws-answer{font-size:11pt;white-space:pre-wrap;min-height:14pt;}
+    .ws-lines{border:none;}
+    .ws-lines div{border-bottom:1pt solid #888;height:20pt;}
+    .ws-inline-line{border-bottom:1pt solid #888;display:inline-block;min-width:55%;height:13pt;vertical-align:bottom;}
+    .ws-check{font-size:11pt;margin-bottom:5pt;}
+    .ws-check .box{font-family:monospace;margin-right:6pt;}
+    .ws-pick{font-size:11pt;font-weight:600;margin:4pt 0 6pt;letter-spacing:.5pt;}
+    .ws-matrix{width:100%;border-collapse:collapse;font-size:8.5pt;margin-top:6pt;}
+    .ws-matrix th,.ws-matrix td{border:0.5pt solid #999;padding:2pt 4pt;text-align:center;}
+    .ws-matrix th:first-child,.ws-matrix td:first-child{text-align:left;}
+    .ws-matrix th:nth-child(2),.ws-matrix td:nth-child(2){text-align:left;font-family:monospace;}
+    .ws-note{font-size:9pt;color:#444;font-style:italic;margin-top:4pt;}
+    @page{margin:0.7in;}
+  }
+
 </style>
 </head>
 <body>
@@ -375,6 +410,13 @@
       <button data-font="dys" aria-pressed="false" title="Dyslexia-friendly">Dys</button>
     </div>
   </div>
+  <div class="a11y-group">
+    <span class="glabel" id="lblPrint">Worksheets</span>
+    <div class="opts opts-stack" role="group" aria-labelledby="lblPrint">
+      <button id="printFilled" title="Print the worksheets with your current entries">Print my work</button>
+      <button id="printBlank" title="Print blank worksheets to fill in by hand">Print blank copies</button>
+    </div>
+  </div>
 </div>
 <div class="sr-only" aria-live="polite" id="a11yAnnounce"></div>
 
@@ -390,13 +432,13 @@
 <section id="goals">
   <div class="wrap">
     <h2>Our Goals</h2>
-    <p class="sec-sub">By the end of this guide, you should be able to make both of these claims with confidence.</p>
+    <p class="sec-sub">Two skills carry an inquiry: building sophisticated search strings and appraising a medley of potential sources.</p>
     <svg class="goal-ornament" viewBox="0 0 120 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><line x1="0" y1="8" x2="50" y2="8" stroke="var(--accent)" stroke-width="1.5"/><polygon points="60,2 68,8 60,14 52,8" fill="var(--accent)"/><line x1="70" y1="8" x2="120" y2="8" stroke="var(--accent)" stroke-width="1.5"/></svg>
     <div class="duo">
       <div class="card goal-card">
         <span class="tag teal">Application</span>
         <h3>I can construct sophisticated search strings.</h3>
-        <p>Combine keywords, Boolean operators, and modifiers to ask a search tool exactly what you mean.</p>
+        <p>Combine keywords, Boolean operators, and modifiers to ask a search tool for exactly what you need.</p>
       </div>
       <div class="card goal-card">
         <span class="tag pink">Evaluation</span>
@@ -432,7 +474,7 @@
     <div class="card">
       <p>Keywords are the words and phrases we use to search for information about a topic. When you type a series of words or phrases into a search box, we call it a <strong>search string</strong>.</p>
       <p>Most people conduct conversations using <strong>natural language</strong>, a system of communication that develops without premeditation and forms rules through regular use.</p>
-      <p>Most computational systems use <strong>artificial or constructed languages</strong>. These systems are devised or premeditated. They follow set rules and norms that differ from the grammatical and syntactical tendencies of natural language in significant ways.</p>
+      <p>Most computational systems use <strong>artificial or constructed languages</strong>. These systems are devised or premeditated. They follow set rules and norms that differ from the grammatical and syntactical tendencies of natural language in significant ways. LLMs aren’t trained on these principles, but learn them through inference based on statistical correlations.</p>
       <p><strong>Search functions are not chatbots!</strong> You'll retrieve better results if you speak to them in their native language!</p>
     </div>
 
@@ -444,6 +486,32 @@
         <li><strong>Formal Language:</strong> Experts tend to use specialized language. What terms or phrases come up in academic writing on the topic?</li>
         <li><strong>Top Level Guides and Subject Headings:</strong> Databases often feature clickable guides that introduce available content. They also rely on metadata to point users to related materials within articles.</li>
       </ul>
+    </div>
+
+    <!-- ============ INTERACTIVE: KEYWORD GENERATOR ============ -->
+    <div class="lab worksheet" id="keywordTool" data-worksheet="Keyword Generator">
+      <div class="lab-head">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span class="t">Keyword Generator</span>
+        <span class="s">worksheet</span>
+      </div>
+      <div class="lab-body">
+        <p style="margin-top:0;color:var(--ink-soft);">Develop a keyword bank before you search. Enter your topic, then gather terms in each category. Generate a list to keep beside you as you work.</p>
+        <div class="meta-row">
+          <input type="text" id="kwTopic" placeholder="Your topic or research question">
+        </div>
+        <div id="kwFields"></div>
+        <div class="center" style="margin-top:18px;">
+          <button class="btn" id="kwGenerate">Generate keyword bank</button>
+          <button class="btn ghost" id="kwReset">Reset</button>
+        </div>
+        <div class="eval-out" id="kwOut" style="display:none;">
+          <pre id="kwPre"></pre>
+          <div class="try" style="margin-top:10px;">
+            <button class="btn sm ghost" id="kwCopy">Copy bank</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <h3>Boolean Operators</h3>
@@ -510,7 +578,7 @@
     </div>
 
     <!-- ============ INTERACTIVE: BOOLEAN BUILDER ============ -->
-    <div class="lab" id="builder">
+    <div class="lab worksheet" id="builder" data-worksheet="Boolean Search Builder">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
         <span class="t">Boolean Search Builder</span>
@@ -553,7 +621,7 @@
     <p class="center" style="color:var(--ink-soft);margin-top:-4px;">How many results did you retrieve? How relevant do they seem?</p>
     <div class="duo">
       <div class="card">
-        <h4 style="color:var(--accent);">Too Many? Narrow down!</h4>
+        <h4 style="color:var(--accent);">Too many? Narrow down!</h4>
         <ul class="clean">
           <li>Use the Boolean operators AND and NOT!</li>
           <li>Rely on post-search filters!</li>
@@ -561,7 +629,7 @@
         </ul>
       </div>
       <div class="card">
-        <h4 style="color:var(--teal);">Too Few? Broaden out!</h4>
+        <h4 style="color:var(--teal);">Too few? Broaden out!</h4>
         <ul class="clean">
           <li>Use Boolean operator OR!</li>
           <li>Truncate to expand basic terms!</li>
@@ -571,10 +639,10 @@
     </div>
 
     <h3>Field Operators: Beyond the Basics</h3>
-    <p class="center" style="color:var(--ink-soft);margin-top:-4px;max-width:700px;margin-left:auto;margin-right:auto;">Boolean operators and modifiers are only the beginning. Most engines also offer field operators that target where a term appears (a title, a URL, a domain, a file type) or when it was published. Support varies, so the tool below offers each engine only what its own documentation confirms, then translates your query into that engine's syntax.</p>
+    <p class="center" style="color:var(--ink-soft);margin-top:-4px;max-width:700px;margin-left:auto;margin-right:auto;">Boolean operators and modifiers are only the beginning. Most engines also offer field operators that target where a term appears (a title, a URL, a domain, a file type) or when it was published. Support varies, so the tool below translates your query into each engine’s syntax.</p>
 
     <!-- ============ INTERACTIVE: FIELD OPERATOR BUILDER ============ -->
-    <div class="lab" id="opTool">
+    <div class="lab worksheet" id="opTool" data-worksheet="Field Operator Builder">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
         <span class="t">Field Operator Builder</span>
@@ -594,7 +662,7 @@
           <button class="btn sm ghost" id="opReset">Reset</button>
         </div>
         <div class="matrix-wrap">
-          <p class="op-note" style="margin-bottom:8px;"><strong>Operator support, by the docs.</strong> <span class="y" style="color:var(--teal);font-weight:700;">Y</span> = documented, <span style="color:var(--ink-soft);">&ndash;</span> = undocumented (may still work), <span class="n" style="color:var(--accent);">N</span> = not supported. Marginalia builds its own index and uses its own grammar.</p>
+          <p class="op-note" style="margin-bottom:8px;"><strong>operator support per the docs</strong> <span class="y" style="color:var(--teal);font-weight:700;">Y</span> = documented, <span style="color:var(--ink-soft);">&ndash;</span> = undocumented (may still work), <span class="n" style="color:var(--accent);">N</span> = not supported. Marginalia builds its own index and uses its own grammar.</p>
           <table class="matrix" id="opMatrix"></table>
           <p class="srcnote">Search engines revise their operators without announcement. This table and tool reflect each engine's published documentation as of June 2026 and may drift slightly out of date; when in doubt, confirm against the engine's own help pages.</p>
         </div>
@@ -612,7 +680,7 @@
     <div class="callout">Media literacy is the ability to <span class="accent">access, analyze, evaluate, create, and act</span> using all forms of communication.</div>
     <div class="card">
       <p>It is an essential skill in our era, when information is abundant and comes from a multitude of sources. Critical information consumers both recognize common media formats and understand the differences between source types. They can capably identify and critically assess the information they encounter.</p>
-      <p class="srcnote">Definition adapted from the National Association for Media Literacy Education (NAMLE), <a href="https://namle.org/resources/media-literacy-defined/" target="_blank" rel="noopener">"Media Literacy Defined."</a> The traditional four-verb formulation (<em>access, analyze, evaluate, create</em>) has been updated here to reflect NAMLE's current five-verb version, which adds <em>act</em> to emphasize civic engagement alongside consumption.</p>
+      <p class="srcnote">Definition adapted from the National Association for Media Literacy Education (NAMLE), <a href="https://namle.org/resources/media-literacy-defined/" target="_blank" rel="noopener">"Media Literacy Defined."</a></p>
     </div>
 
     <h3>Three Source Types</h3>
@@ -650,7 +718,7 @@
     </div>
 
     <!-- ============ INTERACTIVE: PRIMARY/SECONDARY SORTER ============ -->
-    <div class="lab" id="sorter">
+    <div class="lab worksheet" id="sorter" data-worksheet="Primary or Secondary?">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h7M3 12h7M3 18h7"/><path d="M17 5v14M14 8l3-3 3 3"/></svg>
         <span class="t">Primary or Secondary?</span>
@@ -721,7 +789,7 @@
     </div>
 
     <!-- ============ INTERACTIVE: THREE Cs EVALUATOR ============ -->
-    <div class="lab" id="evaluator">
+    <div class="lab worksheet" id="evaluator" data-worksheet="Three Cs Source Evaluator">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
         <span class="t">Three Cs Source Evaluator</span>
@@ -782,25 +850,25 @@
 <section id="managing">
   <div class="wrap">
     <h2>Managing Materials</h2>
-    <p class="sec-sub">A useful result deserves a system. As you work, keep track of what you find so your future self isn't starting over.</p>
+    <p class="sec-sub">Always save your work! Keep track of what you find so your future self needn’t start over.</p>
     <h3>As You Work</h3>
     <div class="triple">
-      <div class="card"><h4 style="color:var(--teal);">Saving</h4><p>If a search proves effective, save it to your account! If a result may be useful, save it to your account!</p></div>
+      <div class="card"><h4 style="color:var(--teal);">Saving</h4><p>Save it to your account or write it down!</p></div>
       <div class="card"><h4 style="color:var(--accent);">Exporting</h4><p>If you want to spend more time with a result, export it to your Google Drive!</p></div>
-      <div class="card"><h4 style="color:var(--gold);">Citing</h4><p>If you want to save yourself time down the road, create your bibliography as you progress!</p></div>
+      <div class="card"><h4 style="color:var(--gold);">Citing</h4><p>If you want to save yourself time down the road, create your bibliography as you progress! <a href="https://my.noodletools.com" target="_blank" rel="noopener">NoodleTools is your friend!</a></p></div>
     </div>
     <div class="card" style="margin-top:18px;"><h4>Find More</h4><p>Once you have a useful article in hand, mine it for leads and references!</p></div>
 
     <h3>NoodleTools</h3>
-    <div class="card" style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:220px;">
-        <p style="margin:0 0 14px;">NoodleTools is our citation management tool of choice! I recommend starting every assignment with a fresh NoodleTools project.</p>
+    <div class="card" style="text-align:center;">
+      <div>
+        <p style="margin:0 auto 14px;max-width:560px;">NoodleTools is our citation management tool of choice! I recommend starting every assignment with a fresh NoodleTools project.</p>
         <a href="https://my.noodletools.com" target="_blank" rel="noopener" class="btn" style="text-decoration:none;">Log in to NoodleTools</a>
       </div>
     </div>
 
     <!-- ============ INTERACTIVE: MLA CITATION BUILDER ============ -->
-    <div class="lab" id="citeBuilder">
+    <div class="lab worksheet" id="citeBuilder" data-worksheet="MLA Citation Builder">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         <span class="t">MLA Citation Builder</span>
@@ -900,10 +968,10 @@
 
     <p class="center" style="color:var(--ink-soft);max-width:680px;margin-left:auto;margin-right:auto;">Enter your research lab with your head on straight and your tools at the ready!</p>
     <h3>Getting Started</h3>
-    <p class="center" style="color:var(--ink-soft);margin-top:-4px;max-width:680px;margin-left:auto;margin-right:auto;">Embrace the irony, children: academic articles, even those common in bibliographies, are seldom actually read, be it in part or in full. As you begin reviewing an article, proceed through these three strategies.</p>
+    <p class="center" style="color:var(--ink-soft);margin-top:-4px;max-width:680px;margin-left:auto;margin-right:auto;">Embrace the irony, children: academic articles cited in bibliographies aren’t always read in full. As you consider an article, proceed through these strategies to assess its worth.</p>
     <div class="triple">
       <div class="card">
-        <h4 style="color:var(--teal);">Scan</h4>
+        <h4 style="color:var(--teal);">First, Scan for Keywords</h4>
         <ul class="clean" style="font-size:.93rem;">
           <li>Search the article for the specific keywords you've deemed relevant.</li>
           <li>Look for synonyms or alternative terms.</li>
@@ -911,7 +979,7 @@
         </ul>
       </div>
       <div class="card">
-        <h4 style="color:var(--accent);">Skim</h4>
+        <h4 style="color:var(--accent);">Second, Skim for Relevance</h4>
         <ul class="clean" style="font-size:.93rem;">
           <li>Read the first and last paragraphs.</li>
           <li>Read the titles, headings, and subheadings.</li>
@@ -920,7 +988,7 @@
         </ul>
       </div>
       <div class="card">
-        <h4 style="color:var(--gold);">Close Read</h4>
+        <h4 style="color:var(--gold);">Third, Close Read for Understanding</h4>
         <ul class="clean" style="font-size:.93rem;">
           <li>Read the entire article.</li>
           <li>Underline key ideas and information.</li>
@@ -932,6 +1000,7 @@
     </div>
 
     <h3>Some Notetaking Strategies</h3>
+    <div class="callout" style="font-size:1.05rem;">Want to go deeper? Consult <a href="https://mistertlibrary.github.io/annotation/" target="_blank" rel="noopener" style="color:var(--on-dark);text-decoration:underline;text-underline-offset:3px;"><em>On Annotation: A Handbook for Active Readers</em></a>.</div>
     <p class="center" style="color:var(--ink-soft);margin-top:-4px;max-width:700px;margin-left:auto;margin-right:auto;">A few general tips at the top: Value your own perspective. Quality over quantity. Write on the page. Keep it simple. Don't highlight more than 5% of a page. Be kind to your future self.</p>
     <div class="triple">
       <div class="card">
@@ -949,7 +1018,7 @@
     </div>
 
     <!-- ============ INTERACTIVE: ARTICLE READING PLANNER ============ -->
-    <div class="lab" id="readingPlanner">
+    <div class="lab worksheet" id="readingPlanner" data-worksheet="Article Reading Planner">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         <span class="t">Article Reading Planner</span>
@@ -1013,7 +1082,7 @@
     </div>
 
     <!-- ============ INTERACTIVE: NEWS APPRAISAL CHECKLIST ============ -->
-    <div class="lab" id="newsAppraisal">
+    <div class="lab worksheet" id="newsAppraisal" data-worksheet="News Appraisal Checklist">
       <div class="lab-head">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
         <span class="t">News Appraisal Checklist</span>
@@ -1059,6 +1128,7 @@
   <p class="colophon">West Essex High School Library Media Center</p>
 </footer>
 
+<div id="printRoot" aria-hidden="true"></div>
 <script>
 /* =================== BOOLEAN BUILDER =================== */
 (function(){
@@ -1177,6 +1247,8 @@
   document.getElementById('exclAdd').onclick=()=>{const i=document.getElementById('exclInput');const v=i.value.trim();if(v){state.excl.push({text:v,exact:false,wild:false});i.value='';render();}};
   document.getElementById('exclInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('exclAdd').click();});
   document.getElementById('resetBuilder').onclick=()=>{state.concepts=[{terms:[]},{terms:[]}];state.excl=[];render();};
+  window.__wsPrint=window.__wsPrint||{};
+  window.__wsPrint.builder=function(){return {string:build(),concepts:state.concepts.map(c=>c.terms.map(fmt).filter(Boolean)),excl:state.excl.map(fmt).filter(Boolean)};};
   render();
 })();
 
@@ -1223,6 +1295,8 @@
     document.getElementById('sorterScore').textContent=correct+' / '+items.length+' correct';
   };
   document.getElementById('resetSorter').onclick=()=>{Object.keys(picks).forEach(k=>delete picks[k]);document.getElementById('sorterScore').textContent='';render();};
+  window.__wsPrint=window.__wsPrint||{};
+  window.__wsPrint.sorter=function(){return {items:items.map((it,i)=>({name:it.name,pick:picks[i]||null}))};};
   render();
 })();
 
@@ -1368,6 +1442,13 @@
     document.getElementById('opMatrix').innerHTML=h;
   }
   document.getElementById('opReset').onclick=()=>{Object.keys(vals).forEach(k=>delete vals[k]);renderGrid();build();};
+  window.__wsPrint=window.__wsPrint||{};
+  window.__wsPrint.opTool=function(){
+    var eng=engines.find(e=>e.id===engine);
+    var parts=[];fields.forEach(function(f){if(f.sup[engine]==='Y'){var v=(vals[f.key]||'').trim();if(v)parts.push(f.build(v,engine));}});
+    var rows=fields.filter(f=>f.syn).map(f=>({label:f.label,syn:f.syn,sup:f.sup})).concat(extraMatrix);
+    return {engine:eng?eng.name:'',query:parts.filter(Boolean).join(' ').trim(),engines:engines.map(e=>e.name),engineIds:engines.map(e=>e.id),fields:fields.filter(f=>f.syn).map(f=>({label:f.label,syn:f.syn})),matrix:rows};
+  };
   renderPick();renderGrid();build();renderMatrix();
 })();
 
@@ -1412,6 +1493,50 @@
   toggle.onclick=()=>openPanel(!panel.classList.contains('open'));
   document.addEventListener('click',e=>{if(!panel.contains(e.target)&&!toggle.contains(e.target))openPanel(false);});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open')){openPanel(false);toggle.focus();}});
+})();
+
+
+
+/* =================== KEYWORD GENERATOR =================== */
+(function(){
+  var cats=[
+    {key:'initial',label:'Initial Terms',hint:'Everyday words for your topic',ph:'What words come to mind? How would ordinary people name this topic in conversation?'},
+    {key:'synonyms',label:'Synonyms and Alternative Terms',hint:'Grab a thesaurus',ph:'What other words or phrases refer to the same idea?'},
+    {key:'formal',label:'Formal Language',hint:'Specialized vocabulary',ph:'What terms appear in academic or expert writing on the topic?'},
+    {key:'headings',label:'Subject Headings and Guides',hint:'Database metadata',ph:'What subject headings, tags, or guide categories point to related material?'}
+  ];
+  var wrap=document.getElementById('kwFields');
+  if(!wrap) return;
+  cats.forEach(function(c){
+    var div=document.createElement('div');div.className='rp-step';
+    div.innerHTML='<div class="rp-step-head"><span class="rp-step-num">'+c.label+'</span><span class="rp-step-hint">'+c.hint+'</span></div>'
+      +'<textarea class="kw-ta" data-label="'+c.label+'" placeholder="'+c.ph.replace(/"/g,'&quot;')+'"></textarea>';
+    wrap.appendChild(div);
+  });
+
+  document.getElementById('kwGenerate').onclick=function(){
+    var topic=(document.getElementById('kwTopic').value||'').trim();
+    var out='KEYWORD BANK\n'+'='.repeat(36)+'\n';
+    if(topic) out+='Topic: '+topic+'\n';
+    out+='\n';
+    document.querySelectorAll('.kw-ta').forEach(function(ta){
+      var label=ta.getAttribute('data-label');
+      var v=(ta.value||'').trim();
+      out+=label.toUpperCase()+':\n'+(v||'(none yet)')+'\n\n';
+    });
+    document.getElementById('kwPre').textContent=out.trim();
+    document.getElementById('kwOut').style.display='block';
+  };
+  document.getElementById('kwReset').onclick=function(){
+    document.getElementById('kwTopic').value='';
+    document.querySelectorAll('.kw-ta').forEach(function(ta){ta.value='';});
+    document.getElementById('kwOut').style.display='none';
+  };
+  document.getElementById('kwCopy').onclick=function(){
+    var txt=document.getElementById('kwPre').textContent;
+    navigator.clipboard&&navigator.clipboard.writeText(txt);
+    var b=document.getElementById('kwCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
+  };
 })();
 
 /* =================== MLA CITATION BUILDER =================== */
@@ -1752,6 +1877,189 @@
     navigator.clipboard&&navigator.clipboard.writeText(txt);
     var b=document.getElementById('naCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
   };
+})();
+
+
+/* =================== WORKSHEET PRINT SYSTEM =================== */
+(function(){
+  function getRoot(){return document.getElementById('printRoot');}
+
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  function collect(lab){
+    /* Walk a worksheet lab-body and return an ordered list of field descriptors. */
+    var body=lab.querySelector('.lab-body');
+    var fields=[];
+    var seen=new Set();
+
+    /* type/choice pickers (selected button) */
+    body.querySelectorAll('.engine-pick').forEach(function(pick){
+      var on=pick.querySelector('button.on');
+      fields.push({kind:'choice', prompt:'Type or selection', value: on?on.textContent.trim():''});
+    });
+
+    /* meta inputs, dynamic inputs, textareas, checkboxes in document order */
+    body.querySelectorAll('input[type=text], textarea, input[type=checkbox]').forEach(function(el){
+      if(seen.has(el)) return; seen.add(el);
+      if(el.type==='checkbox'){
+        var lb=body.querySelector('label[for="'+el.id+'"]');
+        fields.push({kind:'check', prompt: lb?lb.textContent.trim():'', checked: el.checked});
+        return;
+      }
+      /* prompt resolution */
+      var prompt='';
+      var step=el.closest('.rp-step');
+      if(step){
+        var num=step.querySelector('.rp-step-num');
+        if(num) prompt=num.textContent.trim();
+      }
+      if(!prompt){
+        var prev=el.previousElementSibling;
+        if(prev && prev.tagName==='LABEL') prompt=prev.textContent.trim();
+      }
+      if(!prompt) prompt=el.getAttribute('placeholder')||'';
+      var grp='';
+      var col=el.closest('.ccol');
+      if(col){var hh=col.querySelector('.h'); if(hh) grp=hh.textContent.trim();}
+      fields.push({kind: el.tagName==='TEXTAREA'?'long':'short', prompt:prompt, value:el.value||'', group:grp});
+    });
+    return fields;
+  }
+
+  function lines(n){
+    var s='<div class="ws-lines">';
+    for(var i=0;i<n;i++) s+='<div></div>';
+    return s+'</div>';
+  }
+
+  function ilines(n){var s='<div class="ws-lines">';for(var i=0;i<n;i++)s+='<div></div>';return s+'</div>';}
+
+  function renderBuilder(blank){
+    var d=(window.__wsPrint&&window.__wsPrint.builder)?window.__wsPrint.builder():null;
+    var s='';
+    if(blank){
+      s+='<p class="ws-note">Group synonyms inside a concept (they join with OR). Each concept joins to the next with AND. List terms to exclude with NOT.</p>';
+      for(var i=1;i<=3;i++){s+='<div class="ws-field"><div class="ws-prompt">Concept '+i+' (synonyms, joined by OR)</div>'+ilines(1)+'</div>';}
+      s+='<div class="ws-field"><div class="ws-prompt">Exclude (NOT)</div>'+ilines(1)+'</div>';
+      s+='<div class="ws-field"><div class="ws-prompt">Assembled search string</div>'+ilines(2)+'</div>';
+    } else {
+      if(d&&d.concepts&&d.concepts.length){
+        d.concepts.forEach(function(terms,i){
+          s+='<div class="ws-field"><div class="ws-prompt">Concept '+(i+1)+'</div><div class="ws-answer">'+(terms.length?esc(terms.join('  OR  ')):'(empty)')+'</div></div>';
+        });
+      }
+      if(d&&d.excl&&d.excl.length){
+        s+='<div class="ws-field"><div class="ws-prompt">Excluded (NOT)</div><div class="ws-answer">'+esc(d.excl.join(', '))+'</div></div>';
+      }
+      s+='<div class="ws-field"><div class="ws-prompt">Assembled search string</div><div class="ws-answer">'+esc((d&&d.string)||'(none yet)')+'</div></div>';
+    }
+    return s;
+  }
+
+  function matrixTable(d){
+    if(!d||!d.matrix) return '';
+    var t='<table class="ws-matrix"><tr><th>Operator</th><th>Syntax</th>';
+    d.engines.forEach(function(n){t+='<th>'+esc(n)+'</th>';});
+    t+='</tr>';
+    d.matrix.forEach(function(r){
+      t+='<tr><td>'+esc(r.label)+'</td><td>'+esc(r.syn)+'</td>';
+      d.engineIds.forEach(function(id){
+        var v=r.sup[id]; var txt=(v==='Y')?'Y':(v==='N'?'N':'\u2013');
+        t+='<td>'+txt+'</td>';
+      });
+      t+='</tr>';
+    });
+    return t+'</table>';
+  }
+
+  function renderOpTool(blank){
+    var d=(window.__wsPrint&&window.__wsPrint.opTool)?window.__wsPrint.opTool():null;
+    var s='';
+    if(blank){
+      s+='<div class="ws-field"><div class="ws-prompt">Target engine</div>'+ilines(1)+'</div>';
+      if(d&&d.fields){d.fields.forEach(function(f){s+='<div class="ws-field"><div class="ws-prompt">'+esc(f.label)+' <span style="font-family:monospace;">'+esc(f.syn)+'</span></div>'+ilines(1)+'</div>';});}
+      s+='<div class="ws-field"><div class="ws-prompt">Assembled query</div>'+ilines(2)+'</div>';
+    } else {
+      s+='<div class="ws-field"><div class="ws-prompt">Target engine: <span class="ws-answer" style="display:inline;">'+esc((d&&d.engine)||'')+'</span></div></div>';
+      s+='<div class="ws-field"><div class="ws-prompt">Your query</div><div class="ws-answer">'+esc((d&&d.query)||'(none yet)')+'</div></div>';
+    }
+    s+='<p class="ws-note">Operator support per the docs (Y = documented, \u2013 = undocumented, N = not supported), as of June 2026.</p>';
+    s+=matrixTable(d);
+    return s;
+  }
+
+  function renderSorter(blank){
+    var d=(window.__wsPrint&&window.__wsPrint.sorter)?window.__wsPrint.sorter():null;
+    var s='';
+    if(!d||!d.items) return s;
+    if(blank) s+='<p class="ws-note">Circle Primary or Secondary for each, then explain your reasoning.</p>';
+    d.items.forEach(function(it,i){
+      s+='<div class="ws-field"><div class="ws-prompt">'+(i+1)+'. '+esc(it.name)+'</div>';
+      if(blank){
+        s+='<div class="ws-pick">Primary&nbsp;&nbsp;/&nbsp;&nbsp;Secondary</div>'+ilines(1);
+      } else {
+        var p=it.pick==='P'?'Primary':(it.pick==='S'?'Secondary':'(no answer)');
+        s+='<div class="ws-answer">Your answer: '+p+'</div>';
+      }
+      s+='</div>';
+    });
+    return s;
+  }
+
+  var customRenderers={builder:renderBuilder, opTool:renderOpTool, sorter:renderSorter};
+
+  function render(blank){
+    var html='';
+    html+='<div class="ws-doc-head"><h1>Research Basics: Searches &amp; Sources</h1>'
+        + '<p class="ws-sub">West Essex High School Library Media Center</p></div>';
+    if(blank){
+      html+='<div class="ws-id"><span>Name: ___________________</span>'
+          + '<span>Date: _____________</span><span>Class: _____________</span></div>';
+    }
+    document.querySelectorAll('.worksheet').forEach(function(lab){
+      var title=lab.getAttribute('data-worksheet')||'Worksheet';
+      if(customRenderers[lab.id]){
+        html+='<section class="ws"><h2>'+esc(title)+'</h2>'+customRenderers[lab.id](blank)+'</section>';
+        return;
+      }
+      var fields=collect(lab);
+      html+='<section class="ws"><h2>'+esc(title)+'</h2>';
+      var lastGroup=null;
+      fields.forEach(function(f){
+        if(f.group && f.group!==lastGroup){html+='<div class="ws-grp">'+esc(f.group)+'</div>';lastGroup=f.group;}
+        if(!f.group) lastGroup=null;
+        if(f.kind==='check'){
+          var box=blank?'[ ]':(f.checked?'[x]':'[ ]');
+          html+='<div class="ws-check"><span class="box">'+box+'</span>'+esc(f.prompt)+'</div>';
+        } else if(f.kind==='choice'){
+          html+='<div class="ws-field"><div class="ws-prompt">'+esc(f.prompt)+': '
+              + (blank?'<span class="ws-inline-line"></span>':esc(f.value))+'</div></div>';
+        } else if(f.kind==='short'){
+          html+='<div class="ws-field"><div class="ws-prompt">'+esc(f.prompt)+'</div>'
+              + (blank?'<span class="ws-inline-line"></span>':'<div class="ws-answer">'+esc(f.value)+'</div>')+'</div>';
+        } else { /* long */
+          html+='<div class="ws-field"><div class="ws-prompt">'+esc(f.prompt)+'</div>'
+              + (blank?lines(4):'<div class="ws-answer">'+esc(f.value)+'</div>')+'</div>';
+        }
+      });
+      html+='</section>';
+    });
+    var root=getRoot();
+    if(root) root.innerHTML=html;
+  }
+
+  function doPrint(blank){
+    render(blank);
+    document.body.classList.add('ws-printing');
+    function cleanup(){document.body.classList.remove('ws-printing');window.removeEventListener('afterprint',cleanup);}
+    window.addEventListener('afterprint',cleanup);
+    window.print();
+  }
+
+  var pf=document.getElementById('printFilled');
+  var pb=document.getElementById('printBlank');
+  if(pf) pf.onclick=function(){doPrint(false);};
+  if(pb) pb.onclick=function(){doPrint(true);};
 })();
 
 </script>
