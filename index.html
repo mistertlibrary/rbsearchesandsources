@@ -173,8 +173,7 @@
   .callout{background:var(--panel);color:var(--on-dark);border-radius:10px;padding:22px 26px;text-align:center;font-family:var(--font-display);font-size:1.25rem;font-weight:600;margin:22px 0;}
   .callout .accent{color:var(--accent);}
 
-  code,.code-inline{font-family:var(--font-mono);background:var(--paper-2);padding:2px 6px;border-radius:4px;font-size:.92em;color:var(--ink);}
-
+  code,
   /* ---------- INTERACTIVE SHELL ---------- */
   .lab{background:var(--card);border:3px solid var(--c-crimson);border-radius:12px;padding:0;margin:26px 0;overflow:hidden;box-shadow:6px 6px 0 var(--c-crimson);}
   html[data-theme="contrast"] .lab{box-shadow:none;}
@@ -290,8 +289,7 @@
   .a11y-group .opts button{flex:1;border:2px solid var(--ink);background:var(--field);color:var(--ink);border-radius:6px;padding:7px 4px;cursor:pointer;font-weight:700;font-size:.8rem;font-family:var(--font-body);}
   .a11y-group .opts button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-  .flag{background:var(--paper-2);border:2px dashed var(--accent);border-radius:9px;padding:14px 18px;font-size:.9rem;color:var(--ink-soft);margin:14px 0;}
-  footer{padding:54px 24px 90px;text-align:center;color:var(--ink-soft);}
+    footer{padding:54px 24px 90px;text-align:center;color:var(--ink-soft);}
   .footer-crest{width:128px;height:128px;border-radius:50%;background:var(--panel);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;border:2px solid var(--ink);}
   .footer-crest svg{width:104px;height:104px;display:block;}
   footer .big{font-family:var(--font-display);font-size:1.6rem;font-weight:700;color:var(--ink);margin:0;}
@@ -335,6 +333,15 @@
   .opts-stack button{white-space:nowrap;}
   #printRoot{display:none;}
   @media print{
+    /* Unconditional cleanup: any print (incl. raw Ctrl+P) is clean and theme-neutral */
+    :root, :root[data-theme="dark"], :root[data-theme="contrast"]{
+      --paper:#fff; --card:#fff; --panel:#fff; --ink:#000; --ink-soft:#333;
+      --field:#fff; --on-dark:#000;
+    }
+    body{background:#fff !important;}
+    nav, .a11y-toggle, .a11y-panel, .skip-link, .btn, .try, .lab-head .s{display:none !important;}
+    body{background-image:none !important;}
+    .colophon{display:block !important;}
     body.ws-printing > *:not(#printRoot){display:none !important;}
     body.ws-printing #printRoot{display:block !important;}
     #printRoot{color:#000;background:#fff;font-family:Georgia,'Times New Roman',serif;}
@@ -498,7 +505,7 @@
       <div class="lab-body">
         <p style="margin-top:0;color:var(--ink-soft);">Develop a keyword bank before you search. Enter your topic, then gather terms in each category. Generate a list to keep beside you as you work.</p>
         <div class="meta-row">
-          <input type="text" id="kwTopic" placeholder="Your topic or research question">
+          <input type="text" id="kwTopic" data-key="kw_topic" placeholder="Your topic or research question">
         </div>
         <div id="kwFields"></div>
         <div class="center" style="margin-top:18px;">
@@ -798,41 +805,41 @@
       <div class="lab-body">
         <p style="margin-top:0;color:var(--ink-soft);">Working with a source right now? Fill in what you can, then generate a summary to paste into your research notes.</p>
         <div class="meta-row">
-          <input type="text" id="srcTitle" placeholder="Source title">
-          <input type="text" id="srcUrl" placeholder="URL or citation">
+          <input type="text" id="srcTitle" data-key="ev_title" placeholder="Source title">
+          <input type="text" id="srcUrl" data-key="ev_url" placeholder="URL or citation">
         </div>
         <div class="triple">
           <div class="ccol creator">
             <div class="h">Creator</div>
             <div class="qbody">
               <label>Who created it? Author or group?</label>
-              <textarea data-c="Creator" data-q="Creator"></textarea>
+              <textarea data-c="Creator" data-q="Creator" data-key="ev_creator_creator"></textarea>
               <label>Credentials &amp; authority?</label>
-              <textarea data-c="Creator" data-q="Credentials"></textarea>
+              <textarea data-c="Creator" data-q="Credentials" data-key="ev_creator_credentials"></textarea>
               <label>Affiliations &amp; connections?</label>
-              <textarea data-c="Creator" data-q="Affiliations"></textarea>
+              <textarea data-c="Creator" data-q="Affiliations" data-key="ev_creator_affiliations"></textarea>
             </div>
           </div>
           <div class="ccol content">
             <div class="h">Content</div>
             <div class="qbody">
               <label>Attributions &amp; verifiable sources?</label>
-              <textarea data-c="Content" data-q="Sourcing"></textarea>
+              <textarea data-c="Content" data-q="Sourcing" data-key="ev_content_sourcing"></textarea>
               <label>Reasonable vs. what you know?</label>
-              <textarea data-c="Content" data-q="Reasonableness"></textarea>
+              <textarea data-c="Content" data-q="Reasonableness" data-key="ev_content_reasonableness"></textarea>
               <label>Positions taken &amp; dates?</label>
-              <textarea data-c="Content" data-q="Positions and currency"></textarea>
+              <textarea data-c="Content" data-q="Positions and currency" data-key="ev_content_positions_and_currency"></textarea>
             </div>
           </div>
           <div class="ccol context">
             <div class="h">Context</div>
             <div class="qbody">
               <label>How &amp; by whom disseminated? Funded?</label>
-              <textarea data-c="Context" data-q="Dissemination and funding"></textarea>
+              <textarea data-c="Context" data-q="Dissemination and funding" data-key="ev_context_dissemination_and_funding"></textarea>
               <label>Where found? What's alongside it?</label>
-              <textarea data-c="Context" data-q="Provenance"></textarea>
+              <textarea data-c="Context" data-q="Provenance" data-key="ev_context_provenance"></textarea>
               <label>Why does it exist? Whose agenda?</label>
-              <textarea data-c="Context" data-q="Agenda"></textarea>
+              <textarea data-c="Context" data-q="Agenda" data-key="ev_context_agenda"></textarea>
             </div>
           </div>
         </div>
@@ -1027,9 +1034,9 @@
       <div class="lab-body">
         <p style="margin-top:0;color:var(--ink-soft);">Working through an article? Enter your research question and the article's details, then work through the four-step reading approach above. Generate a summary to paste into your research notes when you're done.</p>
         <div class="meta-row">
-          <input type="text" id="rpQuestion" placeholder="Your research question">
-          <input type="text" id="rpTitle" placeholder="Article title">
-          <input type="text" id="rpAuthor" placeholder="Author">
+          <input type="text" id="rpQuestion" data-key="rp_question" placeholder="Your research question">
+          <input type="text" id="rpTitle" data-key="rp_title" placeholder="Article title">
+          <input type="text" id="rpAuthor" data-key="rp_author" placeholder="Author">
         </div>
         <div id="rpSteps"></div>
         <div class="center" style="margin-top:18px;">
@@ -1091,13 +1098,13 @@
       <div class="lab-body">
         <p style="margin-top:0;color:var(--ink-soft);">Working with a news article? Fill in what you know, check off what applies, and generate a brief source note to paste into your research notes.</p>
         <div class="meta-row">
-          <input type="text" id="naHeadline" placeholder="Headline">
-          <input type="text" id="naSource" placeholder="Publication">
+          <input type="text" id="naHeadline" data-key="na_headline" placeholder="Headline">
+          <input type="text" id="naSource" data-key="na_source" placeholder="Publication">
         </div>
         <div class="meta-row">
-          <input type="text" id="naAuthor" placeholder="Author (if named)">
-          <input type="text" id="naDate" placeholder="Date published">
-          <input type="text" id="naUrl" placeholder="URL">
+          <input type="text" id="naAuthor" data-key="na_author" placeholder="Author (if named)">
+          <input type="text" id="naDate" data-key="na_date" placeholder="Date published">
+          <input type="text" id="naUrl" data-key="na_url" placeholder="URL">
         </div>
         <div class="na-type-row" style="margin-bottom:14px;">
           <span class="lbl2" style="font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft);">Article type:</span>
@@ -1105,7 +1112,7 @@
         </div>
         <div id="naChecks" style="margin-bottom:14px;"></div>
         <label style="display:block;font-size:.86rem;font-weight:700;margin-bottom:6px;">Notes on credibility, bias, or context</label>
-        <textarea id="naNotes" style="width:100%;min-height:70px;border:2px solid var(--ink);border-radius:7px;padding:10px;background:var(--field);color:var(--ink);font-family:var(--font-body);font-size:.9rem;resize:vertical;" placeholder="What do you know about this publication? Any red flags?"></textarea>
+        <textarea id="naNotes" data-key="na_notes" style="width:100%;min-height:70px;border:2px solid var(--ink);border-radius:7px;padding:10px;background:var(--field);color:var(--ink);font-family:var(--font-body);font-size:.9rem;resize:vertical;" placeholder="What do you know about this publication? Any red flags?"></textarea>
         <div class="center" style="margin-top:14px;">
           <button class="btn" id="naGenerate">Generate appraisal note</button>
           <button class="btn ghost" id="naReset">Reset</button>
@@ -1130,6 +1137,61 @@
 
 <div id="printRoot" aria-hidden="true"></div>
 <script>
+/* =================== FIELD PERSISTENCE (gs_) =================== */
+var GS={
+  suppress:false,
+  save:function(k,v){if(GS.suppress)return;try{localStorage.setItem('gs_'+k,v);}catch(e){}},
+  load:function(k){try{return localStorage.getItem('gs_'+k);}catch(e){return null;}},
+  saveJSON:function(k,o){if(GS.suppress)return;try{localStorage.setItem('gs_'+k,JSON.stringify(o));}catch(e){}},
+  loadJSON:function(k){try{var s=localStorage.getItem('gs_'+k);return s?JSON.parse(s):null;}catch(e){return null;}},
+  restore:function(scope){
+    (scope||document).querySelectorAll('[data-key]').forEach(function(el){
+      var v=GS.load(el.getAttribute('data-key'));
+      if(v===null)return;
+      if(el.type==='checkbox')el.checked=(v==='1');
+      else if('value' in el)el.value=v;
+    });
+  },
+  clearScope:function(scope){
+    (scope||document).querySelectorAll('[data-key]').forEach(function(el){
+      var k=el.getAttribute('data-key');
+      if(el.type==='checkbox')GS.save(k,'0'); else GS.save(k,'');
+    });
+  }
+};
+/* delegated auto-save for any [data-key] input/textarea/checkbox */
+document.addEventListener('input',function(e){
+  var el=e.target;if(!el||!el.getAttribute)return;
+  var k=el.getAttribute('data-key');if(!k)return;
+  GS.save(k, el.type==='checkbox'?(el.checked?'1':'0'):el.value);
+},true);
+document.addEventListener('change',function(e){
+  var el=e.target;if(!el||!el.getAttribute)return;
+  var k=el.getAttribute('data-key');if(!k)return;
+  if(el.type==='checkbox')GS.save(k, el.checked?'1':'0');
+},true);
+
+/* =================== COPY HELPER (guarded, with fallback) =================== */
+function gsCopy(text, btn){
+  function flash(){if(btn){var o=btn.textContent;btn.textContent='Copied!';setTimeout(function(){btn.textContent=o;},1200);}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(flash, function(){fallback();});
+  } else { fallback(); }
+  function fallback(){
+    try{
+      var ta=document.createElement('textarea');
+      ta.value=text;ta.setAttribute('readonly','');
+      ta.style.position='absolute';ta.style.left='-9999px';
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flash();
+    }catch(e){
+      if(btn){var o2=btn.textContent;btn.textContent='Copy failed';setTimeout(function(){btn.textContent=o2;},1500);}
+    }
+  }
+}
+
 /* =================== BOOLEAN BUILDER =================== */
 (function(){
   const state={concepts:[{terms:[]},{terms:[]}],excl:[]};
@@ -1191,6 +1253,7 @@
     return c;
   }
   function render(){
+    GS.saveJSON('builder_state',{concepts:state.concepts,excl:state.excl});
     conceptsEl.innerHTML='';
     state.concepts.forEach((c,ci)=>{
       const box=document.createElement('div');box.className='concept';
@@ -1249,6 +1312,8 @@
   document.getElementById('resetBuilder').onclick=()=>{state.concepts=[{terms:[]},{terms:[]}];state.excl=[];render();};
   window.__wsPrint=window.__wsPrint||{};
   window.__wsPrint.builder=function(){return {string:build(),concepts:state.concepts.map(c=>c.terms.map(fmt).filter(Boolean)),excl:state.excl.map(fmt).filter(Boolean)};};
+  var __bsv=GS.loadJSON('builder_state');
+  if(__bsv&&__bsv.concepts&&__bsv.concepts.length){state.concepts=__bsv.concepts;state.excl=__bsv.excl||[];}
   render();
 })();
 
@@ -1268,6 +1333,7 @@
   ];
   const wrap=document.getElementById('sorterItems');
   const picks={};
+  (function(){var sp=GS.loadJSON('sorter_picks');if(sp)Object.keys(sp).forEach(function(k){picks[k]=sp[k];});})();
   function render(){
     wrap.innerHTML='';
     items.forEach((it,i)=>{
@@ -1277,7 +1343,7 @@
       ['P','S'].forEach(v=>{
         const b=document.createElement('button');b.textContent=v==='P'?'Primary':'Secondary';
         if(picks[i]===v)b.classList.add('sel');
-        b.onclick=()=>{picks[i]=v;render();};
+        b.onclick=()=>{picks[i]=v;GS.saveJSON('sorter_picks',picks);render();};
         ch.appendChild(b);
       });
       el.appendChild(ch);
@@ -1294,7 +1360,7 @@
     });
     document.getElementById('sorterScore').textContent=correct+' / '+items.length+' correct';
   };
-  document.getElementById('resetSorter').onclick=()=>{Object.keys(picks).forEach(k=>delete picks[k]);document.getElementById('sorterScore').textContent='';render();};
+  document.getElementById('resetSorter').onclick=()=>{Object.keys(picks).forEach(k=>delete picks[k]);GS.saveJSON('sorter_picks',{});document.getElementById('sorterScore').textContent='';render();};
   window.__wsPrint=window.__wsPrint||{};
   window.__wsPrint.sorter=function(){return {items:items.map((it,i)=>({name:it.name,pick:picks[i]||null}))};};
   render();
@@ -1322,8 +1388,7 @@
   document.getElementById('copyEval').onclick=()=>{
     const txt=document.getElementById('evalPre').textContent;
     if(!txt)return;
-    navigator.clipboard&&navigator.clipboard.writeText(txt);
-    const b=document.getElementById('copyEval');const o=b.textContent;b.textContent='Copied';setTimeout(()=>b.textContent=o,1200);
+    gsCopy(txt, document.getElementById('copyEval'));
   };
 })();
 
@@ -1411,6 +1476,7 @@
     });
   }
   function build(){
+    GS.saveJSON('op_state',{engine:engine,vals:vals});
     const parts=[];
     fields.forEach(f=>{
       if(f.sup[engine]!=='Y')return;
@@ -1449,6 +1515,8 @@
     var rows=fields.filter(f=>f.syn).map(f=>({label:f.label,syn:f.syn,sup:f.sup})).concat(extraMatrix);
     return {engine:eng?eng.name:'',query:parts.filter(Boolean).join(' ').trim(),engines:engines.map(e=>e.name),engineIds:engines.map(e=>e.id),fields:fields.filter(f=>f.syn).map(f=>({label:f.label,syn:f.syn})),matrix:rows};
   };
+  var __osv=GS.loadJSON('op_state');
+  if(__osv){if(__osv.engine)engine=__osv.engine;if(__osv.vals)Object.keys(__osv.vals).forEach(function(k){vals[k]=__osv.vals[k];});}
   renderPick();renderGrid();build();renderMatrix();
 })();
 
@@ -1510,9 +1578,10 @@
   cats.forEach(function(c){
     var div=document.createElement('div');div.className='rp-step';
     div.innerHTML='<div class="rp-step-head"><span class="rp-step-num">'+c.label+'</span><span class="rp-step-hint">'+c.hint+'</span></div>'
-      +'<textarea class="kw-ta" data-label="'+c.label+'" placeholder="'+c.ph.replace(/"/g,'&quot;')+'"></textarea>';
+      +'<textarea class="kw-ta" data-label="'+c.label+'" data-key="kw_'+c.key+'" placeholder="'+c.ph.replace(/"/g,'&quot;')+'"></textarea>';
     wrap.appendChild(div);
   });
+  GS.restore(wrap);
 
   document.getElementById('kwGenerate').onclick=function(){
     var topic=(document.getElementById('kwTopic').value||'').trim();
@@ -1530,12 +1599,11 @@
   document.getElementById('kwReset').onclick=function(){
     document.getElementById('kwTopic').value='';
     document.querySelectorAll('.kw-ta').forEach(function(ta){ta.value='';});
+    GS.clearScope(document.getElementById('keywordTool'));
     document.getElementById('kwOut').style.display='none';
   };
   document.getElementById('kwCopy').onclick=function(){
-    var txt=document.getElementById('kwPre').textContent;
-    navigator.clipboard&&navigator.clipboard.writeText(txt);
-    var b=document.getElementById('kwCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
+    gsCopy(document.getElementById('kwPre').textContent, document.getElementById('kwCopy'));
   };
 })();
 
@@ -1733,6 +1801,7 @@
   }
 
   function update(){
+    GS.saveJSON('cite_state',{type:curType,vals:vals});
     var htmlCit=buildCitation(true), plainCit=buildCitation(false);
     var pv=document.getElementById('citePreview');
     pv.innerHTML=htmlCit||'<span style="color:var(--ink-soft);font-style:italic;">Fill in the fields above to preview your citation.</span>';
@@ -1745,11 +1814,12 @@
       var b=document.getElementById('citeHtmlCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
     };
     document.getElementById('citePlainCopy').onclick=function(){
-      navigator.clipboard&&navigator.clipboard.writeText(plainCit);
-      var b=document.getElementById('citePlainCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
+      gsCopy(plainCit, document.getElementById('citePlainCopy'));
     };
   }
 
+  var __csv=GS.loadJSON('cite_state');
+  if(__csv&&__csv.type){curType=__csv.type;if(__csv.vals)Object.keys(__csv.vals).forEach(function(k){vals[k]=__csv.vals[k];});}
   renderPick();renderFields();update();
 })();
 
@@ -1769,6 +1839,7 @@
       +'<textarea class="rp-ta" data-key="'+s.key+'" placeholder="'+s.ph.replace(/"/g,'&quot;')+'"></textarea>';
     el.appendChild(div);
   });
+  GS.restore(el);
 
   document.getElementById('rpGenerate').onclick=function(){
     var q=(document.getElementById('rpQuestion').value||'').trim();
@@ -1792,13 +1863,12 @@
   document.getElementById('rpReset').onclick=function(){
     ['rpQuestion','rpTitle','rpAuthor'].forEach(function(id){document.getElementById(id).value='';});
     document.querySelectorAll('.rp-ta').forEach(function(ta){ta.value='';});
+    GS.clearScope(document.getElementById('readingPlanner'));
     document.getElementById('rpOut').style.display='none';
   };
 
   document.getElementById('rpCopy').onclick=function(){
-    var txt=document.getElementById('rpPre').textContent;
-    navigator.clipboard&&navigator.clipboard.writeText(txt);
-    var b=document.getElementById('rpCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
+    gsCopy(document.getElementById('rpPre').textContent, document.getElementById('rpCopy'));
   };
 })();
 
@@ -1822,17 +1892,21 @@
       curType=t;
       typePick.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
       b.classList.add('on');
+      GS.save('na_type',t);
     };
     typePick.appendChild(b);
   });
+  var savedType=GS.load('na_type');
+  if(savedType){curType=savedType;typePick.querySelectorAll('button').forEach(function(b){if(b.textContent===savedType)b.classList.add('on');});}
 
   var checksEl=document.getElementById('naChecks');
   checks.forEach(function(c,i){
     var div=document.createElement('div');div.className='na-check';
     var id='naChk'+i;
-    div.innerHTML='<input type="checkbox" id="'+id+'"><label for="'+id+'">'+c+'</label>';
+    div.innerHTML='<input type="checkbox" id="'+id+'" data-key="na_chk'+i+'"><label for="'+id+'">'+c+'</label>';
     checksEl.appendChild(div);
   });
+  GS.restore(checksEl);
 
   document.getElementById('naGenerate').onclick=function(){
     var headline=(document.getElementById('naHeadline').value||'').trim();
@@ -1869,13 +1943,13 @@
     document.querySelectorAll('#naChecks input[type=checkbox]').forEach(function(cb){cb.checked=false;});
     typePick.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});
     curType=null;
+    GS.clearScope(document.getElementById('newsAppraisal'));
+    GS.save('na_type','');
     document.getElementById('naOut').style.display='none';
   };
 
   document.getElementById('naCopy').onclick=function(){
-    var txt=document.getElementById('naPre').textContent;
-    navigator.clipboard&&navigator.clipboard.writeText(txt);
-    var b=document.getElementById('naCopy'),o=b.textContent;b.textContent='Copied!';setTimeout(function(){b.textContent=o;},1200);
+    gsCopy(document.getElementById('naPre').textContent, document.getElementById('naCopy'));
   };
 })();
 
@@ -2062,6 +2136,9 @@
   if(pb) pb.onclick=function(){doPrint(true);};
 })();
 
+
+/* restore any static persisted fields once the DOM is built */
+try{GS.restore(document);}catch(e){}
 </script>
 </body>
 </html>
